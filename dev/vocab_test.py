@@ -21,3 +21,5 @@ print(decoded_text)
 # Get the size of the vocabulary
 vocab_size = sp.get_piece_size()
 print(vocab_size)
+
+print(sp.bos_id(), sp.pad_id(), sp.eos_id(), sp.unk_id())
