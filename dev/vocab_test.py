@@ -1,7 +1,7 @@
 import sentencepiece as spm
 
 text_file = '/opt/data/private/linkdom/data/libri_features3/transcript.txt'
-model_type = 'char'
+model_type = 'bpe'
 model_prefix = f'/root/AudioAttention/vocab/librispeech_{model_type}'
 
 # Load the sentencepiece model

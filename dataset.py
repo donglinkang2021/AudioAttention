@@ -27,7 +27,7 @@ class LibriSpeechDataset(Dataset):
     def __getitem__(self, idx):
         waveform, _, utterance, _, _, _ = self.data[idx]
         feature = self.transform(waveform)
-        token = torch.LongTensor(self.tokenizer.encode(utterance))
+        token = torch.LongTensor(self.tokenizer.encode(utterance.lower()))
         return feature, token
 
 

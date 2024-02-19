@@ -28,14 +28,10 @@ class GreedyCTCDecoder(torch.nn.Module):
         # remove pad and unk tokens
         indices = [idx for idx in indices if idx not in [0, 2]]
 
-        # remove the token after eos
-        if indices[-1] == 1:
-            indices = indices[:-1]
-
         return self.tokenizer.decode(indices)
 
-vocab_type = "char"
-greedy_decoder = GreedyCTCDecoder(vocab_type = "char")
-emission = torch.rand(50, 29)
-transcript = greedy_decoder(emission)
-print(transcript)
+# vocab_type = "char"
+# greedy_decoder = GreedyCTCDecoder(vocab_type = "char")
+# emission = torch.rand(50, 29)
+# transcript = greedy_decoder(emission)
+# print(transcript)
