@@ -4,6 +4,7 @@ from torchaudio.datasets import LIBRISPEECH
 from torch.utils.data import Dataset, DataLoader
 import sentencepiece as spm
 from tokenizer import Tokenizer
+from kaldi import FBANK80, MFCC39
 
 SPLITS = [
     "dev-clean",
@@ -18,14 +19,16 @@ class LibriSpeechDataset(Dataset):
         self.data = LIBRISPEECH(root = DATA_ROOT, url = split, download = False)
         self.vocab_type = vocab_type
         self.tokenizer = Tokenizer(vocab_type)
+        self.transform = FBANK80()
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
         waveform, _, utterance, _, _, _ = self.data[idx]
-        utterance = torch.LongTensor(self.tokenizer.encode(utterance))
-        return waveform, utterance
+        feature = self.transform(waveform)
+        token = torch.LongTensor(self.tokenizer.encode(utterance))
+        return feature, token
 
 
 def collate_fn(batch):
@@ -45,11 +48,7 @@ def collate_fn(batch):
     return data, target, data_lengths, target_lengths
 
 
-
-batch_size = 32
-dataloader = DataLoader(LibriSpeechDataset(SPLITS[0]), batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-for i, (data, target, data_lengths, target_lengths) in enumerate(dataloader):
-    print(data.shape, target.shape, data_lengths.shape, target_lengths.shape)
-    if i == 0:
-        break
-
+def get_dataloader(split: str, batch_size: int, vocab_type: str = "char", shuffle: bool = True):
+    dataset = LibriSpeechDataset(split, vocab_type)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
+    return dataloader
