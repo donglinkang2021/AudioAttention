@@ -52,3 +52,11 @@ def get_dataloader(split: str, batch_size: int, vocab_type: str = "char", shuffl
     dataset = LibriSpeechDataset(split, vocab_type)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
     return dataloader
+
+def get_vocab_size(vocab_type: str = "char"):
+    if vocab_type == "char":
+        return 30
+    elif vocab_type == "bpe":
+        return 1000
+    else:
+        raise ValueError(f"Invalid vocab_type: {vocab_type}")
