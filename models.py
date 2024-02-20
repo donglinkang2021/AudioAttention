@@ -36,3 +36,16 @@ class CTCModel(ASRModel):
         logits = logits.log_softmax(-1)
         logits = logits.transpose(0, 1) # BxTxC -> TxBxC
         return logits, logits_lengths
+
+class LinearModel(ASRModel):
+    def __init__(self, input_dim, vocab_size):
+        super().__init__()
+        self.fc = nn.Linear(input_dim, vocab_size)
+        self.apply(self._init_weights)
+        print(f"number of parameters: {self.get_num_params()/1e6:.6f} M ")
+
+    def forward(self, x, x_lengths):
+        x = self.fc(x)
+        x = x.log_softmax(-1)
+        x = x.transpose(0, 1) # BxTxC -> TxBxC
+        return x, x_lengths

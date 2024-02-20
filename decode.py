@@ -4,7 +4,7 @@ from typing import List
 from tokenizer import Tokenizer
 
 
-class GreedyDecoder(torch.nn.Module):
+class GreedyDecoder(nn.Module):
     def __init__(self, vocab_type: str):
         super().__init__()
         self.tokenizer = Tokenizer(vocab_type)
@@ -14,7 +14,9 @@ class GreedyDecoder(torch.nn.Module):
         return self.tokenizer.decode(indices.tolist())
 
 # vocab_type = "char"
-# greedy_decoder = GreedyDecoder(vocab_type)
+# tokenizer = Tokenizer(vocab_type)
 # emission = torch.rand(50, 29)
-# transcript = greedy_decoder(emission)
-# print(transcript)
+# indices = torch.argmax(emission, dim=-1)  # (num_seq, vocab_size) -> (num_seq,)
+# transcript = tokenizer.decode(indices.tolist())
+# print(f"indices: {indices}")
+# print(f"transcript: {transcript}")
