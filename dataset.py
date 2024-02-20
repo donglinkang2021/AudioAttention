@@ -1,8 +1,6 @@
 import torch
-import torchaudio
 from torchaudio.datasets import LIBRISPEECH
 from torch.utils.data import Dataset, DataLoader
-import sentencepiece as spm
 from tokenizer import Tokenizer
 from kaldi import FBANK80, MFCC39
 
@@ -41,9 +39,14 @@ def collate_fn(batch):
     data = torch.nn.utils.rnn.pad_sequence(data, batch_first=True, padding_value=0)
 
     # Pad labels
+    # target = [item[1] for item in sorted_batch]
+    # target_lengths = torch.tensor([t.size(0) for t in target],dtype=torch.long)
+    # target = torch.nn.utils.rnn.pad_sequence(target, batch_first=True, padding_value=0)
+
+    # unpad labels and concatenate them
     target = [item[1] for item in sorted_batch]
     target_lengths = torch.tensor([t.size(0) for t in target],dtype=torch.long)
-    target = torch.nn.utils.rnn.pad_sequence(target, batch_first=True, padding_value=0)
+    target = torch.cat(target, dim=0)
 
     return data, target, data_lengths, target_lengths
 

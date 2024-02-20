@@ -47,8 +47,16 @@ class Tokenizer(BaseTokenizer):
     def encode(self, s):
         return self.spm.encode_as_ids(s)
 
-    def decode(self, idxs):
-        return self.spm.decode_ids(idxs)
+    def decode(self, idxs, ignore_repeat=False):
+        crop_idx = []
+        for t, idx in enumerate(idxs):
+            if idx == self.eos_idx:
+                break
+            elif idx == self.pad_idx or (ignore_repeat and t > 0 and idx == idxs[t-1]):
+                continue
+            else:
+                crop_idx.append(idx)
+        return self.spm.decode_ids(crop_idx)
 
     @property
     def vocab_size(self):

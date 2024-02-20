@@ -64,13 +64,13 @@ def estimate():
     # compute wer for the last batch
     wer = 0
     batch_size = x.size(0)
+    transcript = ""
     for i in tqdm(range(batch_size), ncols=100, desc="WER computing", leave=False):
-        transcript = decoder(y_pred[i])
-        target = decoder.tokenizer.decode(y[i].tolist())
-        wer += jiwer.wer(target, transcript)
+        transcript += decoder(y_pred[i])
+    target = decoder.tokenizer.decode(y.tolist())
     print(f"transcript: {transcript}")
     print(f"target: {target}")
-    wer /= batch_size
+    wer = jiwer.wer(target, transcript)
     metrics[split + '_wer'] = wer
 
     model.train()
